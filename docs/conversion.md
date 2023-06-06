@@ -33,8 +33,9 @@ ncdump -h java_CHIRPS_spi_gamma_3_month_rev.nc
 
 ``` bash
 for t in `cdo showdate java_CHIRPS_spi_gamma_3_month_rev.nc`; do
+    formatted_date=$(date -d $t +%Y%m%d)
     cdo seldate,$t java_CHIRPS_spi_gamma_3_month_rev.nc dummy.nc     
-    gdal_translate -of GTiff -a_ullr 105.05 -5.05 116.25 -8.8 -a_srs EPSG:4326 -co COMPRESS=LZW -co PREDICTOR=1 dummy.nc ../Output_TIF/java_cli_chirps-v2.0.$t.spi3.tif
+    gdal_translate -of GTiff -a_ullr 105.05 -5.05 116.25 -8.8 -a_srs EPSG:4326 -co COMPRESS=LZW -co PREDICTOR=1 dummy.nc ../Output_TIF/java_cli_chirps_spi3_${formatted_date}.tif
 done
 ```
 
