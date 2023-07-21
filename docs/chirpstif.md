@@ -63,7 +63,7 @@ This script was tested using CHIRPS dekad data. Adjustment is needed if using ot
 NCO (http://nco.sourceforge.net) must be installed before using this script
  
 Modified by
-Benny Istanto, UN World Food Programme, benny.istanto@wfp.org
+Benny Istanto, BIGC, benny@istan.to
 -------------------------------------------------------------------------------------------------------------
 """
 
@@ -88,8 +88,9 @@ a = ds.ReadAsArray()
 nlat,nlon = np.shape(a)
 
 b = ds.GetGeoTransform() #bbox, interval
-lon = np.arange(nlon)*b[1]+b[0]
-lat = np.arange(nlat)*b[5]+b[3]
+lon = np.arange(nlon)*b[1] + b[0] + (b[1]/2)  # add half the x pixel size to the lon
+lat = np.arange(nlat)*b[5] + b[3] + (b[5]/2)  # add half the y pixel size to the lat
+lat = np.flipud(lat)  # flip the latitudes
 
 basedate = dt.datetime(1980,1,1,0,0,0)
 
@@ -152,9 +153,9 @@ nco.comments = "time variable denotes the first day of the given dekad."
 nco.website = "https://www.chc.ucsb.edu/data/chirps"
 nco.date_created = "2021-01-25"
 nco.creator_name = "Benny Istanto"
-nco.creator_email = "benny.istanto@wfp.org"
-nco.institution = "UN World Food Programme"
-nco.note = "The data is developed to support regular updating procedure for SPI analysis (https://github.com/bennyistanto/spi). This activities will support WFP to assess extreme dry and wet periods as part of WFP's Seasonal Monitoring"
+nco.creator_email = "benny@istan.to"
+nco.institution = "Benny Istanto Geospatial Consulting"
+nco.note = "The data is developed to support regular updating procedure for SPI analysis (https://github.com/bennyistanto/spi). This activities will support me to assess extreme dry and wet periods as part of my Climate Social Responsibility"
 
 
 # Write lon,lat
@@ -182,7 +183,7 @@ for root, dirs, files in os.walk('/path/to/directory/'):
             print(pcp_path)
             pcp=gdal.Open(pcp_path)
             a=pcp.ReadAsArray()  #data
-            pcpo[itime,:,:]=a
+            pcpo[itime,:,:]=np.flipud(a)  # flip the data in y-direction
             itime=itime+1
 
 nco.close()
